@@ -17,13 +17,16 @@ export default function Questions(){
 
     function theQuestions(){
         return questions.map((q, i)=>{
+            let options = [...q.incorrect_answers, q.correct_answer]
             return(
-                <>
-                    <h1 key={i}>{q.question}</h1>
-                    {q.incorrect_answers.map((option, j)=>{
-                        <button key={j}>option</button>
-                    })}
-                </>
+                <div key={i}>
+                    <h1>{q.question}</h1>
+                    <div className="options">
+                        {options.map((option)=>{
+                            return <button>{option}</button>
+                        })}
+                    </div>
+                </div>
             )
         })
     }
@@ -31,7 +34,7 @@ export default function Questions(){
     return(
         <>
             <section className="question">
-                {theQuestions(questions)}
+                {theQuestions()}
             </section>
             <section>
 

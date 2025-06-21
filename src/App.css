@@ -110,3 +110,25 @@ html, body{
 .question > h1{
   color: #293264;
 }
+
+.options{
+  display: flex;
+  gap: 80px
+
+}
+
+.options > button{
+  background-color: transparent;
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.options > button:hover{
+  box-shadow: 5px 5px 7px 1px rgba(0, 0, 0, 0.1)
+}
