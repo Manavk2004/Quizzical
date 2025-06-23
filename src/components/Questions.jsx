@@ -1,29 +1,49 @@
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 
 export default function Questions(){
     const [questions, setQuestions] = useState([])
+    const [selectedOption, setselectedOption] = useState([])
+    const [usedOption, setUsedOption] = useState([])
+    const [keyValue, setKeyValue] = useState([])
+
+
+    //import information from API
     useEffect(() =>{
         fetch("https://opentdb.com/api.php?amount=5&category=15&difficulty=hard&type=multiple")
         .then(res => res.json())
         .then(data => {
             if (data && data.results && data.results.length > 0){
+                console.log(data.results)
                 setQuestions(data.results)
             }
         })
     },[])
 
-    console.log(questions)
+
+    //Function to toggle buttons
+    function toggle(choice){
+        return selectedOption.includes(choice) ? 
+            selectedOption.filter(option => option !== choice) :
+            [...selectedOption, choice]
+    }
 
 
+    //function to fix sentences, create buttons, make the onClick function to toggle
     function theQuestions(){
         return questions.map((q, i)=>{
+            // Create unique options array for each question to fix key issues
             let options = [...q.incorrect_answers, q.correct_answer]
             return(
-                <div key={i}>
-                    <h1>{q.question}</h1>
+                <div key={i} className="arching-container">
+                    <h1 className="actual-question" dangerouslySetInnerHTML={{__html: q.question}}></h1>
                     <div className="options">
-                        {options.map((option)=>{
-                            return <button>{option}</button>
+                        {options.map((choice, j)=>{
+                            return <button 
+                                key={`q${i}-${choice}`} 
+                                onClick={()=> {setselectedOption(toggle(choice))}} 
+                                className={Object.values(keyValue).some(array => array.includes(choice)) ? "clicked" : "normal"}
+                                dangerouslySetInnerHTML={{__html: choice}}
+                            ></button>
                         })}
                     </div>
                 </div>
@@ -31,22 +51,50 @@ export default function Questions(){
         })
     }
 
+    //Sets the usedOptions state so that we can compare it to the selected options
+    useEffect(()=>{
+        const object = {}
+        questions.forEach((question, index)=>{
+            const options = [question.correct_answer, ...question.incorrect_answers]
+            object[index] = options
+        });
+        setUsedOption(object)
+    }, [questions])
+
+
+    //updates keyValue State
+    useEffect(()=>{
+        console.log("useEffect triggered", usedOption, selectedOption)
+        Object.entries(usedOption).forEach(([index, options])=>{
+            console.log(options)
+            for(const choice of selectedOption){
+                for(const option of options){
+                    if (choice === option){
+                        console.log("started")
+                        setKeyValue((prev)=>({
+                            ...prev,
+                            [index]: option, 
+                        }))
+                        console.log("Done")
+                        break
+                    }
+                }
+            }
+        })
+    }, [selectedOption])
+
+    console.log("Here are the key value pairs", keyValue)
+    useEffect(()=>{
+        console.log("Selected options updated:", selectedOption);
+    },[selectedOption])
+    console.log(`Here is the used option:`, usedOption)
+
     return(
         <>
             <section className="question">
                 {theQuestions()}
+                <button className="check-answers-button">Check Answers</button>
             </section>
-            <section>
-
-            </section>
-            <svg className='blue-blob2' width="297" height="235" viewBox="0 0 297 235" fill="none" xmlns="http://www.w3.org/2000/svg"/>
-        
-            <svg className="yellow-blob2" width="158" height="141" viewBox="0 0 158 141" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fillRule="evenodd" clipRule="evenodd" d="M63.4095 81.3947C35.1213 50.8508 -2.68211 21.7816 1.17274 -19.6933C5.43941 -65.599 39.854 -105.359 82.4191 -123.133C122.797 -139.994 170.035 -130.256 205.822 -105.149C235.947 -84.0141 236.823 -43.8756 246.141 -8.27104C256.17 30.0508 282.521 70.8106 260.501 103.779C237.538 138.159 188.991 143.432 147.931 138.768C112.318 134.723 87.7505 107.677 63.4095 81.3947Z" fill="#FFFAD1"/>
-            </svg>
         </>
-        
-        
-
     )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import './homepage.css'
 import HomePage from "./components/HomePage.jsx"
 import Questions from "./components/Questions.jsx"
 
@@ -9,9 +9,7 @@ export default function App(){
   return(
     <>
       {gameState === "Home Page" && (
-        <main>
-          {<HomePage setGameState={setGameState}/>}
-        </main>
+          <HomePage setGameState={setGameState}/>
       )}
       {gameState !== "Home Page" && (
           <Questions/>
