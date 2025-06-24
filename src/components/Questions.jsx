@@ -20,10 +20,16 @@ export default function Questions(){
                 const CA = data.results.map((data)=>{
                     return data.correct_answer
                 })
+                const ICA = data.results.map((data)=>{
+                    return data.incorrect_answers
+                })
                 setCorrectAnswers(CA)
+                setIncorrectAnswers(ICA)
             }
         })
     },[])
+
+    console.log("Here are the selected options", selectedOption)
 
 
     //Function to toggle buttons
@@ -33,20 +39,25 @@ export default function Questions(){
             [...selectedOption, choice]
     }
 
-    function theClassName(choice){
-        if (!displayMessage){
-            return Object.values(keyValue).some(array => array.includes(choice)) ? "clicked" : "normal"
-        }else{
-            if (correctAnswers.includes(choice)){
-                return "correct-answer-choice"
-            }
-            
-            else{
-                return "normal"
+    function selectedOptionsIncorrect(choice){
+        for(const selected of selectedOption){
+            if (selected.includes(choice) && incorrectAnswers.some(ica => ica.includes(selected))){
+                return true
             }
         }
     }
 
+    function theClassName(choice){
+        if (!displayMessage){
+            return Object.values(keyValue).some(array => array.includes(choice)) ? "clicked" : "normal"
+        }else if(selectedOptionsIncorrect(choice)){
+            return "incorrect-answer-choice"
+        }else if(correctAnswers.includes(choice)){
+            return "correct-answer-choice"
+        }else{
+            return "normal"
+        }
+    }
 
     //function to fix sentences, create buttons, make the onClick function to toggle
     function theQuestions(){

@@ -176,3 +176,12 @@ body{
   padding: 10px;
   color: #293264
 }
+
+.incorrect-answer-choice{
+  background-color: #F8BCBC;
+  border: 1px solid #293264;
+  border-radius: 8px;
+  padding: 10px;
+  color: #293264;
+  opacity: 0.5;
+}
