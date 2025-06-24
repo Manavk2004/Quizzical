@@ -145,7 +145,7 @@ export default function Questions(){
             return(
                 <div className="bottom-info">
                     <h1 className="result">You scored {correctIndexes.length}/5 correct answers </h1>
-                    <button className="play-again">Play Again</button>
+                    <button onClick={() => window.location.reload()} className="play-again">Play Again</button>
                 </div>
             )
         }
