@@ -150,3 +150,29 @@ body{
   padding-bottom: 20px;
   border-bottom: 2px solid #DBDEF0;
 }
+
+.bottom-info{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.play-again{
+  font-family: inherit;
+  background-color: #4D5B9E;
+  color: white;
+  width: 20%;
+  height: 3.125rem;
+  border-radius: 15px;
+} 
+
+
+.correct-answer-choice{
+  background-color: #94D7A2;
+  border: 1px solid #293264;
+  border-radius: 8px;
+  padding: 10px;
+  color: #293264
+}

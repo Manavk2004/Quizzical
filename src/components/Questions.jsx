@@ -5,7 +5,9 @@ export default function Questions(){
     const [selectedOption, setselectedOption] = useState([])
     const [usedOption, setUsedOption] = useState([])
     const [keyValue, setKeyValue] = useState([])
-
+    const [correctAnswers, setCorrectAnswers] = useState([])
+    const [displayMessage, setDisplayMessage] = useState(false)
+    const [incorrectAnswers, setIncorrectAnswers] = useState([])
 
     //import information from API
     useEffect(() =>{
@@ -15,6 +17,10 @@ export default function Questions(){
             if (data && data.results && data.results.length > 0){
                 console.log(data.results)
                 setQuestions(data.results)
+                const CA = data.results.map((data)=>{
+                    return data.correct_answer
+                })
+                setCorrectAnswers(CA)
             }
         })
     },[])
@@ -25,6 +31,20 @@ export default function Questions(){
         return selectedOption.includes(choice) ? 
             selectedOption.filter(option => option !== choice) :
             [...selectedOption, choice]
+    }
+
+    function theClassName(choice){
+        if (!displayMessage){
+            return Object.values(keyValue).some(array => array.includes(choice)) ? "clicked" : "normal"
+        }else{
+            if (correctAnswers.includes(choice)){
+                return "correct-answer-choice"
+            }
+            
+            else{
+                return "normal"
+            }
+        }
     }
 
 
@@ -41,7 +61,7 @@ export default function Questions(){
                             return <button 
                                 key={`q${i}-${choice}`} 
                                 onClick={()=> {setselectedOption(toggle(choice))}} 
-                                className={Object.values(keyValue).some(array => array.includes(choice)) ? "clicked" : "normal"}
+                                className={theClassName(choice)}
                                 dangerouslySetInnerHTML={{__html: choice}}
                             ></button>
                         })}
@@ -88,12 +108,45 @@ export default function Questions(){
         console.log("Selected options updated:", selectedOption);
     },[selectedOption])
     console.log(`Here is the used option:`, usedOption)
+    console.log("Correct answers", correctAnswers)
+
+
+
+    //Compares the submitted response to the actual correct answers
+
+    function correctAnswerCheck(){
+        const array = Object.values(keyValue)
+        console.log("Here is the array", array)
+        console.log(correctAnswers)
+        let correctIndexes = []
+        let wrongIndexes = []
+        correctAnswers.forEach((val, i)=>{
+            val === array[i] ? correctIndexes.push(i) : wrongIndexes.push(i)
+        })
+        if (correctIndexes.length === 5){
+            return(
+                <div className="bottom-info">
+                    <h1 className="result">YOU WON!!!</h1>
+                    <button className="play-again">Play Again</button>
+                </div>
+            )
+        }else{
+            return(
+                <div className="bottom-info">
+                    <h1 className="result">You scored {correctIndexes.length}/5 correct answers </h1>
+                    <button className="play-again">Play Again</button>
+                </div>
+            )
+        }
+
+    }
 
     return(
         <>
             <section className="question">
                 {theQuestions()}
-                <button className="check-answers-button">Check Answers</button>
+                {!displayMessage && <button onClick={()=> {correctAnswerCheck && setDisplayMessage(true)}} className="check-answers-button">Check Answers</button>}
+                {displayMessage && correctAnswerCheck()}
             </section>
         </>
     )
